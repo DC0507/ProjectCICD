@@ -14,7 +14,7 @@ env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'       # set this to the path to your function app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x'                   # set this to the dotnet version to use (e.g. '2.1.x', '3.1.x', '5.0.x')
   CONFIGURATION: 'Release'
-  WORKING_DIRECTORY: '.'
+  #WORKING_DIRECTORY: '.'
 
 jobs:
   build:
@@ -47,7 +47,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_521D14376A4645188B41798806286F01 }}
       # List al the artifacts in package output directory
       - name: List output directory
-        run: ls -R '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        run: ls -R ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -67,8 +67,8 @@ jobs:
       - name: List output directory
         run: ls -R ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
       - name: 'Run Azure Functions Action'
-        uses: Azure/functions-action@v1.5.1
+        uses: Azure/functions-action@v1
         with:
-          app-name: '${{ env.AZURE_FUNCTIONAPP_NAME }}'
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
