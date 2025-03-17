@@ -45,9 +45,27 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0D21541805FC433CB483F7AC0156304E }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_742B902F0200457DB0F704E3EDD65DE2 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_521D14376A4645188B41798806286F01 }}
+      # List al the artifacts in package output directory
+      - name: List output directory
+        run: ls -R '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./output
   deploy:
     runs-on: windows-latest
+    needs: build
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./build
+      - name: List output directory
+        run: ls -R ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1.5.1
         with:
